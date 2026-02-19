@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.uds.java.teste.filesmove.dto.CreateDocumentRequest;
+import com.uds.java.teste.filesmove.dto.DocumentFileVersionResponse;
 import com.uds.java.teste.filesmove.dto.DocumentResponse;
 import com.uds.java.teste.filesmove.dto.FileUploadResponse;
 import com.uds.java.teste.filesmove.dto.UpdateDocumentRequest;
@@ -33,6 +34,7 @@ import com.uds.java.teste.filesmove.model.DocumentFileVersionEntity;
 import com.uds.java.teste.filesmove.service.DocumentService;
 
 import jakarta.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/documents")
@@ -111,6 +113,29 @@ public class DocumentController {
 
 		return ResponseEntity.ok()
 			.contentType(MediaType.parseMediaType(currentVersion.getContentType()))
+			.header(HttpHeaders.CONTENT_DISPOSITION, disposition.toString())
+			.body(resource);
+	}
+
+	@GetMapping("/{id}/files")
+	public ResponseEntity<List<DocumentFileVersionResponse>> listVersions(@PathVariable Long id) {
+		return ResponseEntity.ok(this.documentService.listVersions(id));
+	}
+
+	@GetMapping("/{id}/files/{versionNumber}")
+	public ResponseEntity<Resource> downloadVersion(
+		@PathVariable Long id,
+		@PathVariable Integer versionNumber
+	) {
+		Resource resource = this.documentService.loadFileVersion(id, versionNumber);
+		DocumentFileVersionEntity version = this.documentService.getVersionByNumber(id, versionNumber);
+
+		ContentDisposition disposition = ContentDisposition.attachment()
+			.filename(version.getOriginalFilename(), StandardCharsets.UTF_8)
+			.build();
+
+		return ResponseEntity.ok()
+			.contentType(MediaType.parseMediaType(version.getContentType()))
 			.header(HttpHeaders.CONTENT_DISPOSITION, disposition.toString())
 			.body(resource);
 	}
