@@ -1,0 +1,65 @@
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+}
+
+.brand-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.brand {
+  text-decoration: none;
+  color: var(--brand-strong);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.username {
+  color: var(--muted);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.toolbar-link {
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.logout-btn {
+  border: 1px solid var(--line);
+  background: white;
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  cursor: pointer;
+}
+
+.viewport {
+  width: min(1120px, calc(100% - 2rem));
+  margin: 1.5rem auto 2.2rem;
+}
+
+@media (max-width: 720px) {
+  .topbar {
+    padding: 0.7rem 0.9rem;
+  }
+
+  .viewport {
+    width: calc(100% - 1rem);
+    margin-top: 1rem;
+  }
+}

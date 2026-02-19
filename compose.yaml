@@ -30,8 +30,22 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/filesmove?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: filesmove
       SPRING_DATASOURCE_PASSWORD: filesmove
+      APP_STORAGE_LOCAL_PATH: /app-storage
     ports:
       - "8080:8080"
+    volumes:
+      - app-storage:/app-storage
+
+  views:
+    build:
+      context: ./views
+      dockerfile: Dockerfile
+    container_name: filesmove-views
+    depends_on:
+      - app
+    ports:
+      - "4200:80"
 
 volumes:
   mysql-data:
+  app-storage:

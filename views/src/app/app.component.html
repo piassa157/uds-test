@@ -1,0 +1,16 @@
+<div class="shell">
+  <header class="topbar" *ngIf="auth.isAuthenticated()">
+    <div class="brand-wrap">
+      <a routerLink="/documents" class="brand">Filesmove Docs</a>
+      <small class="username">{{ auth.currentUsername() }}</small>
+    </div>
+    <div class="toolbar">
+      <a routerLink="/documents" class="toolbar-link">Documentos</a>
+      <button class="logout-btn" (click)="logout()">Sair</button>
+    </div>
+  </header>
+
+  <main class="viewport">
+    <router-outlet></router-outlet>
+  </main>
+</div>

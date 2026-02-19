@@ -1,0 +1,30 @@
+<section class="login-screen fade-up">
+  <div class="login-panel card">
+    <h1>Acesse o Portal de Documentos</h1>
+    <p>Autentique para acessar rotas protegidas e gerenciar versões de arquivos.</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label>
+        Usuário
+        <input formControlName="username" placeholder="admin" autocomplete="username" />
+      </label>
+
+      <label>
+        Senha
+        <input formControlName="password" type="password" placeholder="••••••" autocomplete="current-password" />
+      </label>
+
+      <button [disabled]="loading" type="submit">
+        {{ loading ? 'Entrando...' : 'Entrar' }}
+      </button>
+
+      <p class="error" *ngIf="error">{{ error }}</p>
+    </form>
+
+    <div class="hint">
+      <strong>Usuários padrão</strong>
+      <span>admin/admin123</span>
+      <span>usuarioteste/senha123</span>
+    </div>
+  </div>
+</section>

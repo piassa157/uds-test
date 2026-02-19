@@ -1,0 +1,73 @@
+<section class="detail-layout fade-up" *ngIf="!loading && document">
+  <header class="card header-card">
+    <div>
+      <a routerLink="/documents" class="back-link">← Voltar</a>
+      <h1>{{ document.title }}</h1>
+      <p>ID #{{ document.id }} • Criado em {{ document.createdAt | date: 'dd/MM/yyyy HH:mm' }}</p>
+    </div>
+
+    <div class="status-wrap">
+      <span class="badge" [class]="statusClass(document.status)">{{ document.status }}</span>
+      <button type="button" (click)="publish()">Publicar</button>
+      <button type="button" class="ghost" (click)="archive()">Arquivar</button>
+    </div>
+  </header>
+
+  <p class="error" *ngIf="error">{{ error }}</p>
+
+  <div class="content-grid">
+    <section class="card block">
+      <h2>Metadados</h2>
+      <form [formGroup]="form" (ngSubmit)="saveMetadata()" class="meta-form">
+        <label>
+          Título
+          <input formControlName="title" />
+        </label>
+
+        <label>
+          Descrição
+          <textarea rows="4" formControlName="description"></textarea>
+        </label>
+
+        <label>
+          Owner/Tenant
+          <input formControlName="ownerTenant" />
+        </label>
+
+        <label>
+          Tags
+          <input formControlName="tagsText" placeholder="tag1, tag2" />
+        </label>
+
+        <button type="submit" [disabled]="saving">{{ saving ? 'Salvando...' : 'Salvar metadados' }}</button>
+      </form>
+    </section>
+
+    <section class="card block">
+      <h2>Arquivos e versões</h2>
+      <label class="upload-box">
+        <input type="file" (change)="onFileSelected($event)" accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg" />
+        <span>{{ uploading ? 'Enviando arquivo...' : 'Selecionar nova versão (PDF/PNG/JPG)' }}</span>
+      </label>
+
+      <div class="versions" *ngIf="versions.length; else noVersions">
+        <article class="version-item" *ngFor="let version of versions">
+          <div>
+            <strong>Versão {{ version.versionNumber }}</strong>
+            <small>{{ version.originalFilename }} • {{ version.sizeBytes / 1024 | number: '1.0-1' }} KB</small>
+            <small>Upload por {{ version.uploadedBy }} em {{ version.uploadedAt | date: 'dd/MM/yyyy HH:mm' }}</small>
+          </div>
+          <button type="button" class="ghost" (click)="download(version)">Download</button>
+        </article>
+      </div>
+
+      <ng-template #noVersions>
+        <p class="empty">Ainda não há versões enviadas para este documento.</p>
+      </ng-template>
+    </section>
+  </div>
+</section>
+
+<section class="loading" *ngIf="loading">
+  Carregando documento...
+</section>
