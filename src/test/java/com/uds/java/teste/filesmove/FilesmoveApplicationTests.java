@@ -2,7 +2,7 @@ package com.uds.java.teste.filesmove;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import com.uds.java.teste.filesmove.repository.UserJpaRepository;
 
@@ -15,7 +15,7 @@ import com.uds.java.teste.filesmove.repository.UserJpaRepository;
 )
 class FilesmoveApplicationTests {
 
-	@MockBean
+	@MockitoBean
 	private UserJpaRepository userJpaRepository;
 
 	@Test
