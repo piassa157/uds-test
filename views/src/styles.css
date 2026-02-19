@@ -1,0 +1,75 @@
+:root {
+  --bg: #f2f6f7;
+  --ink: #102026;
+  --muted: #61757f;
+  --card: #ffffff;
+  --line: #d7e3e8;
+  --brand: #0f766e;
+  --brand-strong: #0b4f57;
+  --warn: #c2410c;
+  --ok: #2f855a;
+  --radius: 16px;
+  --shadow: 0 16px 48px rgba(15, 118, 110, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'DM Sans', sans-serif;
+  background: radial-gradient(circle at 10% 10%, #d6f6ec 0%, transparent 40%),
+    radial-gradient(circle at 90% 0%, #dff1ff 0%, transparent 35%),
+    var(--bg);
+  color: var(--ink);
+  min-height: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Space Grotesk', sans-serif;
+  margin: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.fade-up {
+  animation: fade-up 0.35s ease both;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

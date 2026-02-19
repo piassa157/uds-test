@@ -1,6 +1,7 @@
 package com.uds.java.teste.filesmove.service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.uds.java.teste.filesmove.dto.CreateDocumentRequest;
+import com.uds.java.teste.filesmove.dto.DocumentFileVersionResponse;
 import com.uds.java.teste.filesmove.dto.DocumentResponse;
 import com.uds.java.teste.filesmove.dto.FileUploadResponse;
 import com.uds.java.teste.filesmove.dto.UpdateDocumentRequest;
@@ -144,6 +146,27 @@ public class DocumentService {
 			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No file found for document"));
 	}
 
+	@Transactional(readOnly = true)
+	public List<DocumentFileVersionResponse> listVersions(Long documentId) {
+		getDocumentOrThrow(documentId);
+		return this.documentFileVersionJpaRepository.findByDocumentIdOrderByVersionNumberDesc(documentId)
+			.stream()
+			.map(this::toVersionResponse)
+			.toList();
+	}
+
+	@Transactional(readOnly = true)
+	public DocumentFileVersionEntity getVersionByNumber(Long documentId, Integer versionNumber) {
+		return this.documentFileVersionJpaRepository.findByDocumentIdAndVersionNumber(documentId, versionNumber)
+			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "File version not found"));
+	}
+
+	@Transactional(readOnly = true)
+	public Resource loadFileVersion(Long documentId, Integer versionNumber) {
+		DocumentFileVersionEntity version = getVersionByNumber(documentId, versionNumber);
+		return this.fileStorageService.loadAsResource(version.getFileKey());
+	}
+
 	private void validateUpload(MultipartFile file) {
 		if (file == null || file.isEmpty()) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File is required");
@@ -192,6 +215,19 @@ public class DocumentService {
 			entity.getStatus(),
 			entity.getCreatedAt(),
 			entity.getUpdatedAt()
+		);
+	}
+
+	private DocumentFileVersionResponse toVersionResponse(DocumentFileVersionEntity entity) {
+		return new DocumentFileVersionResponse(
+			entity.getId(),
+			entity.getVersionNumber(),
+			entity.getFileKey(),
+			entity.getOriginalFilename(),
+			entity.getContentType(),
+			entity.getSizeBytes(),
+			entity.getUploadedAt(),
+			entity.getUploadedBy()
 		);
 	}
 }

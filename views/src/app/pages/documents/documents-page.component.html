@@ -1,0 +1,106 @@
+<section class="grid-layout fade-up">
+  <aside class="card create-panel">
+    <h2>Novo Documento</h2>
+    <p>Além do mínimo, você já pode criar documentos direto pelo front.</p>
+
+    <form [formGroup]="createForm" (ngSubmit)="createDocument()" class="create-form">
+      <label>
+        Título
+        <input formControlName="title" placeholder="Contrato de prestação" />
+      </label>
+
+      <label>
+        Descrição
+        <textarea rows="3" formControlName="description" placeholder="Resumo do documento"></textarea>
+      </label>
+
+      <label>
+        Tags (separadas por vírgula)
+        <input formControlName="tagsText" placeholder="financeiro, contrato" />
+      </label>
+
+      <label>
+        Owner/Tenant
+        <input formControlName="ownerTenant" placeholder="tenant-a" />
+      </label>
+
+      <label>
+        Status inicial
+        <select formControlName="status">
+          <option value="DRAFT">DRAFT</option>
+          <option value="PUBLISHED">PUBLISHED</option>
+          <option value="ARCHIVED">ARCHIVED</option>
+        </select>
+      </label>
+
+      <button [disabled]="creating" type="submit">{{ creating ? 'Salvando...' : 'Criar documento' }}</button>
+    </form>
+  </aside>
+
+  <div class="card list-panel">
+    <header class="list-header">
+      <div>
+        <h2>Documentos</h2>
+        <small>Filtro por título/status + paginação</small>
+      </div>
+
+      <form [formGroup]="filterForm" (ngSubmit)="applyFilters()" class="filters">
+        <input formControlName="title" placeholder="Buscar título" />
+
+        <select formControlName="status">
+          <option *ngFor="let status of statuses" [value]="status">{{ status || 'Todos os status' }}</option>
+        </select>
+
+        <button type="submit">Filtrar</button>
+        <button type="button" class="ghost" (click)="resetFilters()">Limpar</button>
+      </form>
+    </header>
+
+    <p class="error" *ngIf="error">{{ error }}</p>
+
+    <div class="loading" *ngIf="loading">Carregando documentos...</div>
+
+    <div class="table-wrap" *ngIf="!loading">
+      <table>
+        <thead>
+          <tr>
+            <th>Título</th>
+            <th>Status</th>
+            <th>Owner</th>
+            <th>Atualizado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let document of documents">
+            <td>
+              <strong>{{ document.title }}</strong>
+              <small>{{ document.tags.join(', ') || 'sem tags' }}</small>
+            </td>
+            <td>
+              <span class="badge" [class]="statusClass(document.status)">{{ document.status }}</span>
+            </td>
+            <td>{{ document.ownerTenant }}</td>
+            <td>{{ document.updatedAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+            <td>
+              <a [routerLink]="['/documents', document.id]">Detalhe</a>
+            </td>
+          </tr>
+
+          <tr *ngIf="!documents.length">
+            <td colspan="5" class="empty">Nenhum documento encontrado.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <footer class="pager" *ngIf="pageResult">
+      <span>Página {{ pageResult.number + 1 }} de {{ pageResult.totalPages || 1 }}</span>
+      <span>{{ pageResult.totalElements }} registro(s)</span>
+      <div>
+        <button type="button" (click)="changePage(page - 1)" [disabled]="pageResult.number === 0">Anterior</button>
+        <button type="button" (click)="changePage(page + 1)" [disabled]="pageResult.number + 1 >= pageResult.totalPages">Próxima</button>
+      </div>
+    </footer>
+  </div>
+</section>
