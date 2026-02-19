@@ -2,6 +2,9 @@ package com.uds.java.teste.filesmove;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+
+import com.uds.java.teste.filesmove.repository.UserJpaRepository;
 
 @SpringBootTest(
 	properties = {
@@ -11,6 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 	}
 )
 class FilesmoveApplicationTests {
+
+	@MockBean
+	private UserJpaRepository userJpaRepository;
 
 	@Test
 	void contextLoads() {
