@@ -3,7 +3,13 @@ package com.uds.java.teste.filesmove;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(
+	properties = {
+		"spring.autoconfigure.exclude=org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration,"
+			+ "org.springframework.boot.hibernate.autoconfigure.HibernateJpaAutoConfiguration,"
+			+ "org.springframework.boot.session.jdbc.autoconfigure.JdbcSessionAutoConfiguration"
+	}
+)
 class FilesmoveApplicationTests {
 
 	@Test

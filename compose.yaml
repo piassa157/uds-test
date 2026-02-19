@@ -1,10 +1,36 @@
 services:
   mysql:
-    image: 'mysql:latest'
+    image: mysql:8.4
+    container_name: filesmove-mysql
     environment:
-      - 'MYSQL_DATABASE=mydatabase'
-      - 'MYSQL_PASSWORD=secret'
-      - 'MYSQL_ROOT_PASSWORD=verysecret'
-      - 'MYSQL_USER=myuser'
+      MYSQL_DATABASE: filesmove
+      MYSQL_USER: filesmove
+      MYSQL_PASSWORD: filesmove
+      MYSQL_ROOT_PASSWORD: root
     ports:
-      - '3306'
+      - '3306:3306'
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: filesmove-app
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/filesmove?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: filesmove
+      SPRING_DATASOURCE_PASSWORD: filesmove
+    ports:
+      - "8080:8080"
+
+volumes:
+  mysql-data:
